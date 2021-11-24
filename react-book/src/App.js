@@ -29,14 +29,26 @@ const useSemiPersistentState = (key, initialState) => {
         }
     ]
 
+const getAsyncStories = () =>
+
+    new Promise((resolve) => setTimeout(() => resolve({data: {stories: initialStories}}), 2000))
+
+
+
 const App = () => {
 
 
     const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'React')
-    const [stories, setStories]=React.useState(initialStories);
+    const [stories, setStories] = React.useState([]);
+
+    React.useEffect(() => {
+        getAsyncStories().then(result => {
+            setStories(result.data.stories)
+        })
+    },[])
 
     const handleRemoveStory = (item) => {
-        const newStories=stories.filter((story) => item.objectID !== story.objectID)
+        const newStories = stories.filter((story) => item.objectID !== story.objectID)
         setStories(newStories);
     }
 
@@ -97,10 +109,6 @@ const List = ({list, onRemoveItem}) => {
 
 const Item = ({item, onRemoveItem}) => {
 
-    const handleRemoveItem = () => {
-        onRemoveItem(item)
-    }
-
     return (
         <li>
         <span>
@@ -113,9 +121,6 @@ const Item = ({item, onRemoveItem}) => {
                 <button type="button" onClick={() => onRemoveItem(item)}>
                     Dismiss
                 </button>
-                {/*<button type="button" onClick={onRemoveItem.bind(null, item}>*/}
-                {/*    Dismiss*/}
-                {/*</button>*/}
             </span>
         </li>
     )
