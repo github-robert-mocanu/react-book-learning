@@ -2,6 +2,7 @@ import * as React from 'react'
 
 
 const App = () => {
+    console.log("app")
 
     const stories = [
         {
@@ -37,8 +38,12 @@ const App = () => {
 
 
 const Search = () => {
+    console.log("search")
+
+    const [searchTerm, setSearchTerm] = React.useState('');
+
     const handleChange = (event) => {
-        console.log(event.target.value)
+        setSearchTerm(event.target.value)
     }
 
     return (
@@ -50,25 +55,31 @@ const Search = () => {
 }
 
 
-const List = (props) => (
-    <ul>
-        {props.list.map((item) => (
-                <Item key={item.objectID} item={item}/>
-            )
-        )}
-    </ul>
-)
+const List = (props) => {
+    console.log("list")
+    return (
+        <ul>
+            {props.list.map((item) => (
+                    <Item key={item.objectID} item={item}/>
+                )
+            )}
+        </ul>
+    )
+}
 
-const Item = (props) => (
-    <li>
+const Item = (props) => {
+    console.log("item")
+    return (
+        <li>
         <span>
            <a href={props.item.url}>{props.item.title}</a>
         </span>
-        <span>{props.item.author}</span>
-        <span>{props.item.num_comments}</span>
-        <span>{props.item.points}</span>
-    </li>
-)
+            <span>{props.item.author}</span>
+            <span>{props.item.num_comments}</span>
+            <span>{props.item.points}</span>
+        </li>
+    )
+}
 
 
 export default App;
