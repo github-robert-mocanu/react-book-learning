@@ -10,10 +10,7 @@ const useSemiPersistentState = (key, initialState) => {
     return [value, setValue];
 
 }
-
-const App = () => {
-
-    const stories = [
+    const initialStories = [
         {
             title: "React",
             url: "https://reactjs.org/",
@@ -32,7 +29,16 @@ const App = () => {
         }
     ]
 
+const App = () => {
+
+
     const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'React')
+    const [stories, setStories]=React.useState(initialStories);
+
+    const handleRemoveStory = (item) => {
+        const newStories=stories.filter((story) => item.objectID !== story.objectID)
+        setStories(newStories);
+    }
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value)
@@ -52,7 +58,7 @@ const App = () => {
 
             <hr/>
 
-            <List list={searchedStories}/>
+            <List list={searchedStories} onRemoveItem={handleRemoveStory}/>
         </>
     );
 }
@@ -77,19 +83,23 @@ const InputWithLabel = ({id, children, value, type = "text", isFocused, onInputC
 }
 
 
-const List = ({list}) => {
+const List = ({list, onRemoveItem}) => {
 
     return (
         <ul>
             {list.map((item) => (
-                    <Item key={item.objectID} item={item}/>
+                    <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem}/>
                 )
             )}
         </ul>
     )
 }
 
-const Item = ({item}) => {
+const Item = ({item, onRemoveItem}) => {
+
+    const handleRemoveItem = () => {
+        onRemoveItem(item)
+    }
 
     return (
         <li>
@@ -99,6 +109,14 @@ const Item = ({item}) => {
             <span>{item.author}</span>
             <span>{item.num_comments}</span>
             <span>{item.points}</span>
+            <span>
+                <button type="button" onClick={() => onRemoveItem(item)}>
+                    Dismiss
+                </button>
+                {/*<button type="button" onClick={onRemoveItem.bind(null, item}>*/}
+                {/*    Dismiss*/}
+                {/*</button>*/}
+            </span>
         </li>
     )
 }
