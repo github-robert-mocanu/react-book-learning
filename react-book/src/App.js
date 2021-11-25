@@ -47,8 +47,9 @@ const App = () => {
         setSearchTerm(event.target.value)
     }
 
-    const handleSearchSubmit = () => {
+    const handleSearchSubmit = (event) => {
         setUrl(`${API_ENDPOINT}${searchTerm}`)
+        event.preventDefault()
     }
 
     const handleFetchStories=React.useCallback(async () => {
@@ -75,14 +76,7 @@ const App = () => {
         <>
             <h1>My Hacker Stories</h1>
 
-            <InputWithLabel id="search" value={searchTerm} onInputChange={handleSearchInput} isFocused>
-                <strong>Search:</strong>
-            </InputWithLabel>
-
-            <button type={"button"} disabled={!searchTerm} onClick={handleSearchSubmit}>
-                Submit
-            </button>
-
+            <SearchForm searchTerm={searchTerm} onSearchInput={handleSearchInput} onSearchSubmit={handleSearchSubmit}/>
 
             <hr/>
 
@@ -147,6 +141,19 @@ const Item = ({item, onRemoveItem}) => {
         </li>
     )
 }
+
+const SearchForm = ({searchTerm, onSearchInput, onSearchSubmit}) => (
+    <form onSubmit={onSearchSubmit}>
+        <InputWithLabel id="search" value={searchTerm} onInputChange={onSearchInput} isFocused>
+            <strong>Search:</strong>
+        </InputWithLabel>
+
+        <button type={"submit"} disabled={!searchTerm}>
+            Submit
+        </button>
+    </form>
+
+)
 
 
 export default App;
