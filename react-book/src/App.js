@@ -10,28 +10,9 @@ const useSemiPersistentState = (key, initialState) => {
     return [value, setValue];
 
 }
-    const initialStories = [
-        {
-            title: "React",
-            url: "https://reactjs.org/",
-            author: "Jordan Walke",
-            um_comments: 3,
-            points: 4,
-            objectID: 0,
-        },
-        {
-            title: "Redux",
-            url: "https://redux.js.org/",
-            author: "Dan Abramov, Andrew Clark",
-            num_comments: 2,
-            points: 5,
-            objectID: 1,
-        }
-    ]
 
-const getAsyncStories = () => {
-    return new Promise((resolve, reject) => setTimeout(reject,2000))
-}
+const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query='
+
 
 const storiesReducer = (state, action) => {
     switch (action.type) {
@@ -63,8 +44,8 @@ const App = () => {
     React.useEffect(() => {
        dispatchStories({ type: 'STORIES_FETCH_INIT' })
 
-        getAsyncStories().then(result => {
-            dispatchStories({type: 'STORIES_FETCH_SUCCESS', payload: result.data.stories})
+       fetch(`${API_ENDPOINT}react`).then(response=>response.json()).then(result => {
+            dispatchStories({type: 'STORIES_FETCH_SUCCESS', payload: result.hits})
         }).catch(() => dispatchStories({type: 'STORIES_FETCH_FAILURE'}))
     },[])
 
