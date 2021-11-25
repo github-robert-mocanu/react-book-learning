@@ -1,4 +1,5 @@
 import * as React from 'react'
+import axios from 'axios'
 
 const useSemiPersistentState = (key, initialState) => {
     const [value, setValue] = React.useState(localStorage.getItem(key) || initialState);
@@ -53,8 +54,8 @@ const App = () => {
     const handleFetchStories=React.useCallback(()=>{
         dispatchStories({ type: 'STORIES_FETCH_INIT' })
 
-        fetch(url).then(response=>response.json()).then(result => {
-            dispatchStories({type: 'STORIES_FETCH_SUCCESS', payload: result.hits})
+        axios.get(url).then(result => {
+            dispatchStories({type: 'STORIES_FETCH_SUCCESS', payload: result.data.hits})
         }).catch(() => dispatchStories({type: 'STORIES_FETCH_FAILURE'}))
     }, [url])
 
@@ -64,10 +65,6 @@ const App = () => {
 
     const handleRemoveStory = (item) => {
         dispatchStories({type: 'REMOVE_STORY', payload: item})
-    }
-
-    const handleSearch = (event) => {
-        setSearchTerm(event.target.value)
     }
 
     return (
