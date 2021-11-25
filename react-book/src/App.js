@@ -40,15 +40,23 @@ const App = () => {
 
     const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'React')
     const [stories, dispatchStories] = React.useReducer(storiesReducer, {data: [], isLoading: false, isError: false})
+    const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`)
+
+    const handleSearchInput = event => {
+        setSearchTerm(event.target.value)
+    }
+
+    const handleSearchSubmit = () => {
+        setUrl(`${API_ENDPOINT}${searchTerm}`)
+    }
 
     const handleFetchStories=React.useCallback(()=>{
-        if (!searchTerm) return
         dispatchStories({ type: 'STORIES_FETCH_INIT' })
 
-        fetch(`${API_ENDPOINT}${searchTerm}`).then(response=>response.json()).then(result => {
+        fetch(url).then(response=>response.json()).then(result => {
             dispatchStories({type: 'STORIES_FETCH_SUCCESS', payload: result.hits})
         }).catch(() => dispatchStories({type: 'STORIES_FETCH_FAILURE'}))
-    }, [searchTerm])
+    }, [url])
 
     React.useEffect(() => {
         handleFetchStories()
@@ -66,9 +74,14 @@ const App = () => {
         <>
             <h1>My Hacker Stories</h1>
 
-            <InputWithLabel id="search" value={searchTerm} onInputChange={handleSearch} isFocused>
+            <InputWithLabel id="search" value={searchTerm} onInputChange={handleSearchInput} isFocused>
                 <strong>Search:</strong>
             </InputWithLabel>
+
+            <button type={"button"} disabled={!searchTerm} onClick={handleSearchSubmit}>
+                Submit
+            </button>
+
 
             <hr/>
 
