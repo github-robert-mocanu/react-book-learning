@@ -1,7 +1,7 @@
 import * as React from 'react'
 import axios from 'axios'
 import './App.css'
-import { ReactComponent as Check } from './check.svg'
+import {ReactComponent as Check} from './check.svg'
 
 const useSemiPersistentState = (key, initialState) => {
     const isMounted = React.useRef(false)
@@ -45,7 +45,7 @@ const storiesReducer = (state, action) => {
 
 
 const App = () => {
-
+    console.log('B:App')
 
     const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'React')
     const [stories, dispatchStories] = React.useReducer(storiesReducer, {data: [], isLoading: false, isError: false})
@@ -76,9 +76,9 @@ const App = () => {
         handleFetchStories()
     },[handleFetchStories])
 
-    const handleRemoveStory = (item) => {
+    const handleRemoveStory = React.useCallback((item) => {
         dispatchStories({type: 'REMOVE_STORY', payload: item})
-    }
+    },[])
 
     return (
         <div className={"container"}>
@@ -117,17 +117,19 @@ const InputWithLabel = ({id, children, value, type = "text", isFocused, onInputC
 }
 
 
-const List = ({list, onRemoveItem}) => {
+const List = React.memo(({list, onRemoveItem}) => {
+        console.log('B:List')
 
-    return (
-        <ul>
-            {list.map((item) => (
-                    <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem}/>
-                )
-            )}
-        </ul>
-    )
-}
+        return (
+            <ul>
+                {list.map((item) => (
+                        <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem}/>
+                    )
+                )}
+            </ul>
+        )
+    }
+)
 
 const Item = ({item, onRemoveItem}) => {
 
