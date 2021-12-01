@@ -43,6 +43,13 @@ const storiesReducer = (state, action) => {
     }
 }
 
+const getSumComments = (stories) => {
+    console.log('C')
+
+    return stories.data.reduce(
+        (result, value) => result + value.num_comments, 0
+    )
+}
 
 const App = () => {
     console.log('B:App')
@@ -74,15 +81,17 @@ const App = () => {
 
     React.useEffect(() => {
         handleFetchStories()
-    },[handleFetchStories])
+    }, [handleFetchStories])
 
     const handleRemoveStory = React.useCallback((item) => {
         dispatchStories({type: 'REMOVE_STORY', payload: item})
-    },[])
+    }, [])
+
+    const sumComments = React.useMemo(() => getSumComments(stories), [stories])
 
     return (
         <div className={"container"}>
-            <h1 className={"headline-primary"}>My Hacker Stories</h1>
+            <h1 className={"headline-primary"}>My Hacker Stories with {sumComments} comments</h1>
 
             <SearchForm searchTerm={searchTerm} onSearchInput={handleSearchInput} onSearchSubmit={handleSearchSubmit}/>
 
