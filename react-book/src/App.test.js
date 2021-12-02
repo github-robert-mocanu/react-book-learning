@@ -1,5 +1,7 @@
 import * as React from 'react'
-import {storiesReducer,} from './App';
+import {Item, SearchForm, storiesReducer} from './App';
+import {fireEvent, render, screen} from "@testing-library/react";
+import '@testing-library/jest-dom'
 
 
 const storyOne = {
@@ -81,4 +83,67 @@ describe('storiesReducer', () => {
         expect(newState).toStrictEqual(expectedState)
     })
 
+})
+
+describe('Item', () => {
+    test('renders all properties', () => {
+        render(<Item item={storyOne}/>)
+
+        expect(screen.getByText('Jordan Walke')).toBeInTheDocument();
+        expect(screen.getByText('React')).toHaveAttribute('href', 'https://reactjs.org/')
+
+
+    })
+
+    test('renders a clickable dismiss button', () => {
+        render(<Item item={storyOne}/>)
+
+        expect(screen.getByRole('button')).toBeInTheDocument()
+    })
+
+    test('clicking the dismiss button calls the callback handler', () => {
+        const handlerRemoveItem = jest.fn();
+
+        render(<Item item={storyOne} onRemoveItem={handlerRemoveItem}/>)
+
+        fireEvent.click(screen.getByRole('button'))
+
+        expect(handlerRemoveItem).toHaveBeenCalledTimes(1)
+    })
+})
+
+describe('Search Form', () => {
+    const searchFormProps = {
+        searchTerm: 'React',
+        onSearchInput: jest.fn(),
+        onSearchSubmit: jest.fn(),
+    }
+
+    test('renders the input field with its value', () => {
+        render(<SearchForm {...searchFormProps}/>)
+
+        expect(screen.getByDisplayValue('React')).toBeInTheDocument()
+    })
+
+    test('renders the correct label', () => {
+        render(<SearchForm  {...searchFormProps}/>);
+
+        expect (screen.getByLabelText(/Search/)).toBeInTheDocument()
+    })
+
+    test('calls onSearchInput on input field change', () => {
+        render(<SearchForm {...searchFormProps}/>)
+
+        fireEvent.change(screen.getByDisplayValue('React'), {
+            target: {value: 'Redux'},
+        });
+
+        expect(searchFormProps.onSearchInput).toHaveBeenCalledTimes(1)
+    });
+
+    test('calls onSearchSubmit on button submit click', () => {
+        render(<SearchForm {...searchFormProps} />);
+        fireEvent.submit(screen.getByRole('button'));
+        expect(searchFormProps.onSearchSubmit).toHaveBeenCalledTimes(1);
+    })
 })
