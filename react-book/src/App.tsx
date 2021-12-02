@@ -207,7 +207,8 @@ const Item = ({item, onRemoveItem}: ItemProps) => {
             <span style={{width: '10%'}}>{item.points}</span>
             <span style={{width: '10%'}}>
                 <button className={"button button-small"} type="button" onClick={() => onRemoveItem(item)}>
-                    <Check height={"18 px"} width={"18px"} />
+                    {/*<Check height={"18 px"} width={"18px"} />*/}
+                    Dismiss
                 </button>
             </span>
         </li>
